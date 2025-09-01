@@ -1,0 +1,45 @@
+[debug] [2025-09-01T16:18:29.410Z] ----------------------------------------------------------------------
+[debug] [2025-09-01T16:18:29.411Z] Command:       /usr/local/bin/node /Users/liamesika/.npm-global/bin/firebase init
+[debug] [2025-09-01T16:18:29.411Z] CLI Version:   14.11.1
+[debug] [2025-09-01T16:18:29.411Z] Platform:      darwin
+[debug] [2025-09-01T16:18:29.411Z] Node Version:  v22.16.0
+[debug] [2025-09-01T16:18:29.412Z] Time:          Mon Sep 01 2025 19:18:29 GMT+0300 (Israel Daylight Time)
+[debug] [2025-09-01T16:18:29.412Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-09-01T16:18:29.502Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-09-01T16:18:29.503Z] > authorizing via signed-in user (mytrademinder@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/liamesika/mytrademind/mytrademind
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-09-01T16:18:40.163Z] Using project from CLI flag: trade-mind-9fe52
+[debug] [2025-09-01T16:18:40.164Z] Checked if tokens are valid: true, expires at: 1756747102977
+[debug] [2025-09-01T16:18:40.165Z] Checked if tokens are valid: true, expires at: 1756747102977
+[debug] [2025-09-01T16:18:40.166Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/trade-mind-9fe52 [none]
+[debug] [2025-09-01T16:18:40.562Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/trade-mind-9fe52 403
+[debug] [2025-09-01T16:18:40.562Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/trade-mind-9fe52 {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2025-09-01T16:18:40.562Z] Request to https://firebase.googleapis.com/v1beta1/projects/trade-mind-9fe52 had HTTP Error: 403, The caller does not have permission
+[debug] [2025-09-01T16:18:40.705Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/trade-mind-9fe52 had HTTP Error: 403, The caller does not have permission
+    at responseToError (/Users/liamesika/.npm-global/lib/node_modules/firebase-tools/lib/responseToError.js:52:12)
+    at RetryOperation._fn (/Users/liamesika/.npm-global/lib/node_modules/firebase-tools/lib/apiv2.js:312:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: Failed to get Firebase project trade-mind-9fe52. Please make sure the project exists and your account has permission to access it.

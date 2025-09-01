@@ -1,0 +1,311 @@
+/* משתנים */
+:root{
+    --main-font: 'Space Grotesk', sans-serif;
+    --header-font: 'Orbitron', sans-serif;
+    --text-color: #E4DDEC;
+    --dark-blue: #000019;
+    --normal-blue: #1102FB;
+    --gradient: linear-gradient(288deg, #CA23EC -16.31%, #0020FF 92.42%);
+    --radius-full: 50px;
+    --card-height: 680px;
+    --card-margin: -610px;
+    --card-top-offset: 3.5em;
+    --numcards: 3;
+}
+.flex {
+    display: flex;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-font {
+    font-family: var(--header-font);
+}
+
+.header {
+    gap: 52px;
+    padding: 16px 136px 16px 135px;
+    width: 100%;
+    height: 96px;
+    backdrop-filter: blur(25px);
+    background: var(--dark-blue);
+}
+
+
+.header-mobile {
+    display: none !important;
+}
+.mobile-menu{
+    display: none;
+}
+
+.logo {
+    align-items: center;
+    height: 64px;
+}
+
+/* Logo icon and text */
+.logo-icon {
+    width: 102px;
+    height: 64px;
+    flex-shrink: 0;
+    aspect-ratio: 51/32;
+    /* background: url("/homepage-media/logo.png") no-repeat center center; */
+}
+
+.logo-text {
+   width: 144px;
+   height: 15px;
+   flex-shrink: 0;
+}
+
+.logo-text img {
+   width: 100%;
+   height: 100%;
+   object-fit: contain;
+}
+
+.menu {
+    align-items: center;
+    padding: 14px 22px;
+    gap: 55px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--dark-blue-60, #4D4D5C);
+}
+
+/* Menu text */
+.menu a {
+    color: var(--text-color);
+    font-size: 1rem;
+    font-style: normal;
+    align-items: center;
+    font-weight: 300;
+    line-height: normal;
+    white-space: nowrap; /* 🧠 מונע שבירת שורה */
+    min-width: 47px;
+    height: 22px;
+}
+
+.menu a:hover{
+    text-decoration: underline;
+}
+
+.btns {
+    align-items: center;
+    gap: 28px;
+}
+
+.log-in {
+    gap: 8px;
+    padding: 8px 12px;
+    width: 95px;
+    height: 38px;
+    cursor: pointer;
+    border-radius: var(--radius-full);
+    position: relative;
+    transition: 0.5s;
+}
+
+.log-in::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-full);
+    padding: 2px;
+    background: var(--gradient);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    transition: 0.5s;
+    opacity: 0;
+}
+
+.log-in:hover::before {
+    opacity: 1;
+}
+
+.log-in-text {
+    color: var(--text-color);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    transition: transform 0.5s ease;
+}
+
+.log-in-dot {
+    width: 9.795px;
+    height: 9.795px;
+    border-radius: 50%;
+    background-color: var(--normal-blue);
+    transition: opacity 0.5s ease;
+}
+
+.log-in:hover .log-in-dot {
+    opacity: 0;
+}
+
+.log-in:hover .log-in-text {
+    transform: translateX(-7px);
+}
+.btn-small {
+    height: 45px;
+    padding-right: 34px;
+    padding: 0px;
+    border-radius: 36px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-small .rectangle {
+    width: 9.795px;
+    height: 9.795px;
+    flex-shrink: 0;
+    border-radius: 40px;
+    background: var(--normal-blue);
+}
+
+.btn-small-text {
+    flex-shrink: 0;
+    color: var(--text-color);
+    font-size: 0.9375rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.btn-small-frame {
+    gap: 12px;
+    padding: 13px 40px;
+    border-radius: var(--radius-full);
+    background: var(--gradient);
+}
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 0 28px 0 28px;
+    width: 430px;
+    height: 100vh;
+    background-color: var(--dark-blue);
+    z-index: 999999;
+}
+
+.footer-menu nav .btn-small {
+    display: none;
+}
+.mobile-menu .mobile-menu-header {
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 21px;
+    width: 100%;
+}
+
+.mobile-menu .mobile-menu-header .logo-icon {
+    width: 73px;
+    height: 46px;
+    aspect-ratio: 73/46;
+}
+
+.mobile-menu .mobile-menu-header .logo-text {
+    width: 103px;
+    height: 11px;
+}
+
+.mobile-menu .mobile-menu-items {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+    margin-top: 102px;
+}
+
+.mobile-menu .mobile-menu-items a {
+    color: #9A9A9F;
+    font-size: 1.625rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.mobile-menu .mobile-menu-items a:hover {
+    color: var(--gradient);
+}
+
+.mobile-menu .mobile-menu-items a.special {
+    font-size: 1.625rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    background: var(--gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.mobile-menu .special-icon {
+    position: absolute;
+    bottom: -90px;
+    left: 105px;
+    width: 380.021px;
+    height: 250.551px;
+}
+
+@media screen and (max-width: 1209px) {
+    .header {
+        display: none !important; /* מסתיר את header הראשי במובייל */
+    }
+.mobile-menu{
+    display: block !important;
+}
+    #lang-toggle {
+        display: none; /* מסתיר את כפתור החלפת השפה */
+    }
+
+    .header-mobile {
+        display: flex !important; /* ✅ מוסיף אותו מחדש */
+        align-items: center;
+        padding: 21px 28.446px 16px 15.554px;
+        width: 100%;
+        backdrop-filter: blur(25px);
+        background: rgba(0, 0, 25, 0.58);
+    }
+
+    .header-mobile .mobile-header-inner {
+        justify-content: space-between;
+        width: inherit;
+    }
+
+    .header-mobile .mobile-header-inner .logo {
+        width: 73px;
+        height: 46px;
+        flex-shrink: 0;
+        aspect-ratio: 73/46;
+    }
+
+    .header-mobile .mobile-header-inner .logo-icon {
+        width: 73px;
+        height: 46px;
+        flex-shrink: 0;
+        fill: var(--text-color);
+    }
+
+    .header-mobile .mobile-header-inner .logo-text {
+        width: 103px;
+        height: 11px;
+        flex-shrink: 0;
+    }
+
+    .header-mobile .menu {
+        display: none; /* מסתיר את התפריט במובייל */
+    }
+}
+
+@media screen and (max-width: 475px){
+    .mobile-menu {
+        width: 100%;
+    }
+}
