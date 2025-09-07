@@ -1,5 +1,5 @@
 // scripts/auth-guard.js
-import { watchAuthState, logout } from "./firebase-auth.js";
+import { watchAuthState } from "./firebase-auth.js";
 import { getFirestore, doc, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 // ---- Config by <meta> tags in <head> ----
@@ -38,8 +38,9 @@ function hasRequiredRole(userDoc, requireRole) {
 }
 
 function redirectWithReturn(to) {
-  const ret = encodeURIComponent(location.pathname + location.search);
-  location.replace(`${to}?return=${ret}`);
+  const ret = encodeURIComponent(window.location.pathname + window.location.search);
+  window.location.replace(`${to}?return=${ret}`);
+
 }
 
 watchAuthState({

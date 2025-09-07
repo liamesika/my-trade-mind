@@ -7,6 +7,8 @@ import { ref, onValue, off } from "firebase/database";
 import TradeModal from "../components/TradeModal";
 import DailyJournalModal from "../components/DailyJournalModal";
 import CalendarWithJournal from "../components/CalendarWithJournal";
+import "../styles/fonts.css";
+import "../styles/ui.css";
 
 import {
   collection,
@@ -17,10 +19,6 @@ import {
   arrayUnion,
   serverTimestamp,
   onSnapshot,
-  query,
-  where,
-  orderBy,
-  limit,
 } from "firebase/firestore";
 import {
   Chart,
@@ -92,6 +90,7 @@ export default function Dashboard() {
       tradesRef,
       (snapshot) => {
         const rows = [];
+        void stop;
         if (snapshot.exists()) {
           const trades = snapshot.val();
           Object.entries(trades).forEach(([id, trade]) => {

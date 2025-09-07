@@ -1,0 +1,85 @@
+:root{
+  --container-max: 1200px;
+  --radius: 14px;
+  --shadow: 0 10px 25px rgba(2, 6, 23, 0.08);
+
+  /* צבעים בסיסיים - נעדכן לפי הלוגו בהמשך */
+  --primary: #0ea5e9;     /* כפתור/הדגשה */
+  --primary-600: #0284c7;
+  --primary-50: #eff8ff;
+  --border: #e5e7eb;
+  --muted: #667085;
+}
+
+/* Grid + spacing */
+.container{
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: clamp(12px, 4vw, 24px);
+}
+
+.section{
+  padding-block: clamp(16px, 4vw, 32px);
+}
+
+.grid{
+  display: grid;
+  gap: clamp(12px, 2.5vw, 20px);
+}
+
+/* Cards */
+.card{
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: clamp(14px, 2.5vw, 20px);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 16px 35px rgba(2, 6, 23, 0.12);
+}
+
+/* Typography */
+h1,h2,h3{ margin: 0 0 .35em; line-height: 1.2; }
+h1{ font-weight: 800; font-size: clamp(26px, 3.6vw, 36px); }
+h2{ font-weight: 700; font-size: clamp(20px, 3vw, 28px); }
+h3{ font-weight: 600; font-size: clamp(18px, 2.4vw, 22px); }
+p{ margin: 0 0 .75em; color: var(--muted); }
+
+/* Buttons */
+.btn{
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+}
+.btn:hover{ background: var(--primary-600); transform: translateY(-1px); }
+.btn:focus-visible{ outline: 3px solid var(--primary-50); outline-offset: 2px; }
+
+/* Links */
+a{ color: var(--primary); text-decoration: none; }
+a:hover{ text-decoration: underline; }
+
+/* Animations */
+.fade-in{ animation: fadeIn .35s ease-out both; }
+@keyframes fadeIn{
+  from{ opacity: 0; transform: translateY(4px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive helpers */
+@media (min-width: 768px){
+  .grid-cols-2{ grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (min-width: 1024px){
+  .grid-cols-3{ grid-template-columns: repeat(3,minmax(0,1fr)); }
+}

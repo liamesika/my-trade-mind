@@ -1,5 +1,5 @@
 // lang.js
-
+export const translations = {};
 // ✅ פונקציית קביעת שפה והחלת תרגומים
 function setLanguage(lang) {
   localStorage.setItem("lang", lang);

@@ -1,11 +1,10 @@
 // /public/scripts/auth-nav-nahandler.js
-import { watchAuthState, logout, logout, currentUser } from "./firebase-auth.js";
+import { watchAuthState, logout, currentUser } from "./firebase-auth.js";
 import { translatePage } from "/lang/translations.js";
 
 const signupBtn    = document.getElementById("signup-button");
 const loginBtn     = document.getElementById("login-button");
 const userGreeting = document.getElementById("user-greeting");
-const userNameSpan = document.getElementById("user-name");
 
 const navFeatures   = document.querySelectorAll('[data-i18n="navFeatures"]');
 const navHowItWorks = document.querySelectorAll('[data-i18n="navHowItWorks"]');
@@ -25,7 +24,7 @@ function translateUserGreeting(user) {
     document.getElementById("logout-button")?.addEventListener("click", async () => {
       try {
         await logout();
-        location.reload();
+        window.location.reload();
       } catch (err) {
         console.error("Error signing out:", err);
       }

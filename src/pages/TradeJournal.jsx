@@ -1,3 +1,4 @@
+// src/pages/TradeJournal.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase/firebase";
@@ -6,13 +7,12 @@ import {
   getDocs,
   deleteDoc,
   doc,
-  //   getDoc,
   setDoc,
   addDoc,
 } from "firebase/firestore";
-import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import TradeModal from "../components/TradeModal";
-import { logout, watchAuthState } from "../firebase/firebase-auth";
+import { login, logout, watchAuthState } from "../firebase/firebase-auth";
 
 const TradeJournal = () => {
   const navigate = useNavigate();
@@ -26,28 +26,34 @@ const TradeJournal = () => {
   const [formData, setFormData] = useState({});
   const [user, setUser] = useState(null);
 
+  // keep auth state in one place
   useEffect(() => {
-    const unsubscribe = watchAuthState({
-      onIn: (user) => setUser(user),
+    return watchAuthState({
+      onIn: (u) => setUser(u),
       onOut: () => setUser(null),
     });
-    return unsubscribe;
   }, []);
 
+  // react to user changes (navigate/fetch)
   useEffect(() => {
-    let hasAlerted = false;
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    setUserName(user.email);
+    generateCalendar(user.uid);
+  }, [user, navigate]);
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user && !hasAlerted) {
-        navigate("/login");
-      } else if (user) {
-        setUserName(user.email);
-        generateCalendar(user.uid);
+  // still keep listener to refresh calendar on native changes
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      if (u) {
+        setUserName(u.email);
+        generateCalendar(u.uid);
       }
     });
-
-    return () => unsubscribe();
-  }, [navigate]);
+    return () => unsub();
+  }, []);
 
   const generateCalendar = async (uid) => {
     const snapshot = await getDocs(collection(db, "users", uid, "trades"));
@@ -70,11 +76,7 @@ const TradeJournal = () => {
     const password = e.target.password.value;
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await login(email, password);
       setUserName(userCredential.user.email);
       setShowLogin(false);
       generateCalendar(userCredential.user.uid);
@@ -85,8 +87,8 @@ const TradeJournal = () => {
 
   const handleTradeSubmit = async (e) => {
     e.preventDefault();
-    const user = auth.currentUser;
-    if (!user) return alert("⛔ המשתמש לא מחובר");
+    const u = auth.currentUser;
+    if (!u) return alert("⛔ המשתמש לא מחובר");
 
     const trade = {
       ...formData,
@@ -98,48 +100,46 @@ const TradeJournal = () => {
 
     try {
       const docRef = formData.editingId
-        ? doc(db, "users", user.uid, "trades", formData.editingId)
-        : collection(db, "users", user.uid, "trades");
+        ? doc(db, "users", u.uid, "trades", formData.editingId)
+        : collection(db, "users", u.uid, "trades");
 
       formData.editingId
         ? await setDoc(docRef, trade)
         : await addDoc(docRef, trade);
 
-      alert(
-        formData.editingId ? "✅ עסקה עודכנה בהצלחה!" : "✅ עסקה נשמרה בהצלחה!"
-      );
+      alert(formData.editingId ? "✅ עסקה עודכנה בהצלחה!" : "✅ עסקה נשמרה בהצלחה!");
       setFormData({});
       setShowTradeModal(false);
-      generateCalendar(user.uid);
+      generateCalendar(u.uid);
     } catch (err) {
       alert("❌ שגיאה בשמירה");
     }
   };
 
   const deleteTrade = async (tradeId) => {
-    const user = auth.currentUser;
-    if (!user) return alert("משתמש לא מחובר");
-
+    const u = auth.currentUser;
+    if (!u) return alert("משתמש לא מחובר");
     if (!window.confirm("האם את בטוחה שברצונך למחוק את העסקה?")) return;
 
     try {
-      await deleteDoc(doc(db, "users", user.uid, "trades", tradeId));
+      await deleteDoc(doc(db, "users", u.uid, "trades", tradeId));
       alert("✅ העסקה נמחקה");
-      generateCalendar(user.uid);
+      generateCalendar(u.uid);
       setShowDayModal(false);
     } catch (err) {
       alert("❌ לא הצלחנו למחוק את העסקה");
     }
   };
-    const handleLogout = async () => {
+
+  const handleLogout = async () => {
     try {
-        await logout();
-        // אפשרות לנקות גם את המשתמש מהסטייט
-        setUser(null);
+      await logout();
+      setUser(null);
     } catch (error) {
-        console.error("שגיאה בהתנתקות:", error);
+      console.error("שגיאה בהתנתקות:", error);
     }
-    };
+  };
+
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
@@ -148,14 +148,9 @@ const TradeJournal = () => {
 
   const renderCalendar = () => {
     const calendar = [];
-    for (let i = 0; i < startDay; i++) {
-      calendar.push(<div key={`empty-${i}`} />);
-    }
-
+    for (let i = 0; i < startDay; i++) calendar.push(<div key={`empty-${i}`} />);
     for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
-        day
-      ).padStart(2, "0")}`;
+      const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       const trades = tradesMap[dateStr] || [];
       calendar.push(
         <div
@@ -184,7 +179,6 @@ const TradeJournal = () => {
         </div>
       );
     }
-
     return calendar;
   };
 
@@ -193,28 +187,11 @@ const TradeJournal = () => {
       {/* Login Modal */}
       {showLogin && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <form
-            onSubmit={handleLogin}
-            className="bg-gray-800 p-6 rounded-lg w-full max-w-sm"
-          >
+          <form onSubmit={handleLogin} className="bg-gray-800 p-6 rounded-lg w-full max-w-sm">
             <h2 className="text-xl mb-4 text-center">התחברות</h2>
-            <input
-              type="email"
-              name="email"
-              className="w-full p-2 mb-2 bg-white/10 border border-gray-600"
-              placeholder="אימייל"
-              required
-            />
-            <input
-              type="password"
-              name="password"
-              className="w-full p-2 mb-4 bg-white/10 border border-gray-600"
-              placeholder="סיסמה"
-              required
-            />
-            <button type="submit" className="w-full bg-blue-600 p-2 rounded">
-              התחבר
-            </button>
+            <input type="email" name="email" className="w-full p-2 mb-2 bg-white/10 border border-gray-600" placeholder="אימייל" required />
+            <input type="password" name="password" className="w-full p-2 mb-4 bg-white/10 border border-gray-600" placeholder="סיסמה" required />
+            <button type="submit" className="w-full bg-blue-600 p-2 rounded">התחבר</button>
           </form>
         </div>
       )}
@@ -224,26 +201,11 @@ const TradeJournal = () => {
         <span>שלום, {userName}</span>
         <div>
           {user ? (
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 px-4 py-2 rounded mr-2"
-            >
-              🔓 התנתקות
-            </button>
+            <button onClick={handleLogout} className="bg-red-600 px-4 py-2 rounded mr-2">🔓 התנתקות</button>
           ) : (
-            <button
-              onClick={() => setShowLogin(true)}
-              className="bg-yellow-600 px-4 py-2 rounded mr-2"
-            >
-              🔐 התחברות
-            </button>
+            <button onClick={() => setShowLogin(true)} className="bg-yellow-600 px-4 py-2 rounded mr-2">🔐 התחברות</button>
           )}
-          <button
-            onClick={() => setShowTradeModal(true)}
-            className="bg-green-600 px-4 py-2 rounded"
-          >
-            ➕ הוסף עסקה
-          </button>
+          <button onClick={() => setShowTradeModal(true)} className="bg-green-600 px-4 py-2 rounded">➕ הוסף עסקה</button>
         </div>
       </div>
 
@@ -253,10 +215,8 @@ const TradeJournal = () => {
       {/* Day Trades Modal */}
       {showDayModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-gray-900 p-6 rounded-lg w-full max-w-3xl overflow-y-auto max-h-[80vh]">
-            <h2 className="text-xl mb-4 text-center">
-              עסקאות ליום {selectedDay}
-            </h2>
+          <div className="bg-gray-900 p-6 rounded-lg w/full max-w-3xl overflow-y-auto max-h-[80vh]">
+            <h2 className="text-xl mb-4 text-center">עסקאות ליום {selectedDay}</h2>
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-800 text-center">
@@ -277,33 +237,19 @@ const TradeJournal = () => {
                     <td className="p-2">{t.exit}</td>
                     <td className="p-2">{t.result}</td>
                     <td className="p-2">
-                      <button
-                        onClick={() => deleteTrade(t.id)}
-                        className="text-red-500"
-                      >
-                        🗑️
-                      </button>
+                      <button onClick={() => deleteTrade(t.id)} className="text-red-500">🗑️</button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <button
-              onClick={() => setShowDayModal(false)}
-              className="mt-4 w-full bg-gray-700 p-2 rounded"
-            >
-              סגור
-            </button>
+            <button onClick={() => setShowDayModal(false)} className="mt-4 w-full bg-gray-700 p-2 rounded">סגור</button>
           </div>
         </div>
       )}
 
       {/* Add/Edit Trade Modal */}
-      <TradeModal
-        show={showTradeModal}
-        onClose={() => setShowTradeModal(false)}
-        onSubmit={handleTradeSubmit}
-      />
+      <TradeModal show={showTradeModal} onClose={() => setShowTradeModal(false)} onSubmit={handleTradeSubmit} />
     </div>
   );
 };

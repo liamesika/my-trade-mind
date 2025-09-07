@@ -54,7 +54,7 @@ function renderGreeting(user) {
   logoutBtn.id = "logout-button";
   logoutBtn.className = "ml-2 text-sm text-red-400 underline";
   logoutBtn.textContent = document.documentElement.lang === "he" ? "התנתק" : "Log Out";
-  logoutBtn.addEventListener("click", () => logout(auth).then(() => location.reload()));
+  logoutBtn.addEventListener("click", () => logout(auth).then(() => window.location.reload()));
 
   userGreeting.append(helloNode, nameSpan, space, logoutBtn);
 }

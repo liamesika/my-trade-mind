@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { sendChatMessage } from '../scripts/chat-proxy';
+//import { sendChatMessage } from '../scripts/chat-proxy';
 import { useChatAutoload } from '../scripts/chat-autoload';
 import { useNavigate } from 'react-router-dom';
 

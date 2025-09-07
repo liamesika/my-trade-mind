@@ -1,9 +1,10 @@
+/* global closeDayTradesModal, openAddTradeModal, openDayTradesModal, closeAddTradeModal, closeLoginModal, generateCalendar */
 // scripts/journal.js - גרסה מתוקנת עם Firebase מודולרי (v9)
+// import { getFirestore as fbGetFirestore } from 'firebase/firestore'; // unused in this file for now
 
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+import { doc, getDoc, setDoc, deleteDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 import { auth, db } from "./firebase-init.js";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { onAuthStateChanged, signInWithEmailAndPassword as fbSignInWithEmailAndPassword } from "firebase/auth";
 
 window.openAddTradeModal = () => document.getElementById("trade-modal-overlay")?.classList.remove("hidden");
 window.closeAddTradeModal = () => document.getElementById("trade-modal-overlay")?.classList.add("hidden");
@@ -56,7 +57,7 @@ window.deleteTrade = async (tradeId, dateStr) => {
   const user = auth.currentUser;
   if (!user) return alert("משתמש לא מחובר");
 
-  if (!confirm("האם את בטוחה שברצונך למחוק את העסקה?")) return;
+if (!window.confirm("האם את בטוחה שברצונך למחוק את העסקה?")) return;
 
   try {
     await deleteDoc(doc(db, "users", user.uid, "trades", tradeId));
@@ -175,12 +176,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const password = document.getElementById("password").value;
 
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await fbSignInWithEmailAndPassword(auth, email, password);
         localStorage.setItem("userId", userCredential.user.uid);
         localStorage.setItem("userName", userCredential.user.email);
         alert("✅ התחברת בהצלחה!");
         closeLoginModal();
-        location.reload();
+        window.location.reload();
       } catch (err) {
         alert("❌ שגיאה בהתחברות: " + err.message);
       }
