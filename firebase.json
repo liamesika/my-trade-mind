@@ -2,9 +2,9 @@
   "hosting": {
     "public": "build",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "frameworksBackend": { "region": "us-central1" },
+    "cleanUrls": true,
+    "trailingSlash": false,
     "rewrites": [
-      { "source": "/api/callOpenAI", "function": { "functionId": "callOpenAI", "region": "europe-west1" } },
       { "source": "**", "destination": "/index.html" }
     ],
     "headers": [
@@ -27,6 +27,5 @@
       }
     ]
   },
-  "firestore": { "rules": "firestore.rules" },
-  "functions": { "source": "functions" }
+  "firestore": { "rules": "firestore.rules" }
 }

@@ -1,7 +1,7 @@
 // src/pages/Register.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { db, auth } from "../firebase/firebase-init.js";
+import { db, auth } from "../scripts/firebase-init.js";
 import { createUserWithEmailAndPassword  } from "firebase/auth";
 import { updateProfile } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";

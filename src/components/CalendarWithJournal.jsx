@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getDocs, query, collection } from "firebase/firestore";
-import { db } from "../firebase/firebase"; // נתיב מותאם לפי פרויקט שלך
+import { firestore as db } from "../scripts/firebase-init.js";
 
 export default function CalendarGrid({ currentUser, currentDate, onDayClick }) {
   const [journalData, setJournalData] = useState([]);

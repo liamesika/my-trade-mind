@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "mytrademind-e1451"
-  }
+    "default": "mytrademind-e1451",
+    "prod": "mytrademind-e1451"
+  },
+  "targets": {},
+  "etags": {}
 }

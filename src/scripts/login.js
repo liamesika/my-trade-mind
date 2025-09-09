@@ -1,7 +1,7 @@
 // scripts/login.js
 
 // ייבוא auth בלבד כי firebase-init כבר כולל את האתחול המלא
-import { auth } from "../firebase/firebase-init.js";
+import { auth } from "./firebase-init.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 import {

@@ -1,8 +1,8 @@
 // src/firebase/firebase-init.js  (או הנתיב אצלך)
 import { initializeApp, getApp, getApps } from "firebase/app";
 import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
-import { getDatabase } from "firebase/database";           // אם משתמשים ב-Realtime DB
-import { getFirestore } from "firebase/firestore";         // אם יש Firestore
+import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported as analyticsSupported } from "firebase/analytics";
 
@@ -24,7 +24,7 @@ const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 // שירותים — ייצוא יחיד לכל הפרויקט
 export const auth = getAuth(app);
-export const db = getDatabase(app);       // אם את לא משתמשת ב-Realtime DB — אפשר להסיר
+export const realtimeDb = getDatabase(app);       // אם את לא משתמשת ב-Realtime DB — אפשר להסיר
 export const firestore = getFirestore(app);// אם אין Firestore — להסיר
 export const storage = getStorage(app);
 
@@ -36,6 +36,7 @@ export let analytics = null;
 if (typeof window !== "undefined" && typeof document !== "undefined" && firebaseConfig.measurementId) {
   analyticsSupported().then((ok) => { if (ok) analytics = getAnalytics(app); });
 }
+export { firestore as db };
 
 export default app;
 
