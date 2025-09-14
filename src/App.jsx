@@ -16,6 +16,9 @@ import Dashboard from "./pages/dashboard";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ToastContainer from "./components/Toast";
+
+import "./styles/design-tokens.css";
 
 export default function App() {
   const { user, loading } = useAuth();
@@ -68,6 +71,7 @@ export default function App() {
       </Routes>
 
       <Footer />
+      <ToastContainer />
     </>
   );
 }

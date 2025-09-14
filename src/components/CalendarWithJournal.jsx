@@ -34,6 +34,7 @@ export default function CalendarGrid({ currentUser, currentDate, onDayClick }) {
   }, [currentUser, currentDate]);
 
   const getDaysInMonth = () => {
+    if (!currentDate) return 31; // fallback
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     return new Date(year, month + 1, 0).getDate();
@@ -63,7 +64,7 @@ export default function CalendarGrid({ currentUser, currentDate, onDayClick }) {
         key={day}
         className={className}
               onClick={() =>
-          onDayClick(new Date(currentDate.getFullYear(), currentDate.getMonth(), day))
+          onDayClick && currentDate ? onDayClick(new Date(currentDate.getFullYear(), currentDate.getMonth(), day)) : null
         }
 
       >
@@ -72,6 +73,11 @@ export default function CalendarGrid({ currentUser, currentDate, onDayClick }) {
       </div>
     );
   };
+
+  // Early return if required props are missing  
+  if (!currentDate) {
+    return <div className="grid grid-cols-7 gap-1 md:gap-2" style={{minHeight: '200px'}}></div>;
+  }
 
   const days = Array.from({ length: getDaysInMonth() }, (_, i) => i + 1);
 

@@ -1,9 +1,8 @@
 // src/pages/Register.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { db, auth } from "../scripts/firebase-init.js";
-import { createUserWithEmailAndPassword  } from "firebase/auth";
-import { updateProfile } from "firebase/auth";
+import { useAuth } from "../firebase/AuthContext";
+import { db } from "../scripts/firebase-init.js";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 import "../styles/register-login.css";
@@ -12,6 +11,7 @@ import "../styles/footer.css";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { signUp, loading: authLoading } = useAuth();
   const [params] = useSearchParams();
   const plan = (params.get("plan") || "basic").toLowerCase(); // plan from URL (?plan=basic/pro)
 
@@ -40,13 +40,8 @@ export default function Register() {
     setLoading(true);
 
     try {
-      // יצירת משתמש
-      const { user } = await createUserWithEmailAndPassword(auth, email, password);
-
-      // עדכון שם תצוגה
-      if (fullName) {
-        await updateProfile(user, { displayName: fullName });
-      }
+      // יצירת משתמש עם AuthContext
+      const user = await signUp(email, password, fullName);
 
       // שמירת פרטי משתמש + התכנית שנבחרה
       await setDoc(
@@ -66,14 +61,8 @@ export default function Register() {
       // ניווט ל-Checkout עם אותה תכנית
       navigate(`/checkout?plan=${plan}`, { replace: true });
     } catch (error) {
-      console.error("שגיאה בהרשמה:", error);
-      if (error.code === "auth/email-already-in-use") {
-        alert("האימייל הזה כבר רשום במערכת.");
-      } else if (error.code === "auth/weak-password") {
-        alert("הסיסמה חייבת להכיל לפחות 6 תווים.");
-      } else {
-        alert("שגיאה בהרשמה: " + (error?.message || "Registration failed"));
-      }
+      // Error handling is done in AuthContext
+      console.error("Registration failed:", error);
     } finally {
       setLoading(false);
     }
@@ -124,9 +113,9 @@ export default function Register() {
             <button
               type="submit"
               className="w-full py-2 rounded-xl bg-blue-600 hover:bg-blue-700 transition disabled:opacity-60"
-              disabled={loading}
+              disabled={loading || authLoading}
             >
-              {loading ? "נרשם... ⏳" : "Register"}
+              {(loading || authLoading) ? "נרשם... ⏳" : "Register"}
             </button>
           </form>
 

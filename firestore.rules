@@ -1,27 +1,28 @@
-// firestore.rules
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Allow authenticated users full access to their own user document and subcollections
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // All subcollections under user document
+      match /{document=**} {
+        allow read, write, create, update, delete: if request.auth != null && request.auth.uid == userId;
+      }
+    }
     
-    // כל משתמש יכול לקרוא ולכתוב רק למסמכים של עצמו
-    match /users/{userId}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    // Legacy patterns - allow any authenticated user (temporary for migration)
+    match /trades/{document=**} {
+      allow read, write, create, update, delete: if request.auth != null;
     }
-
-    // יומנים – נגישים רק למשתמש שלהם
-    match /journals/{userId}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    
+    match /portfolio/{document=**} {
+      allow read, write, create, update, delete: if request.auth != null;
     }
-
-    // שיחות צ'אט – גם לפי uid
-    match /chats/{userId}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // ברירת מחדל – חסום הכל
-    match /{document=**} {
-      allow read, write: if false;
+    
+    // Catch-all for any other collections an authenticated user might need
+    match /{collectionId}/{document=**} {
+      allow read, write: if request.auth != null;
     }
   }
 }

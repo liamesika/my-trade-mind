@@ -1,12 +1,13 @@
 // Restored Original Dashboard with Working Functionality
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../firebase/AuthContext';
 import { useLanguage } from '../i18n/useLanguage';
 import { createTradeService, createStatsService } from '../services/tradeService';
 import { useToasts } from '../services/toastService';
 import TradeModal from '../components/TradeModal';
-import TradingCalendar from '../components/TradingCalendar';
-import DailyTradesModal from '../components/DailyTradesModal';
+import DailyJournalModal from '../components/DailyJournalModal';
+import CalendarWithJournal from '../components/CalendarWithJournal';
 import LanguageToggle from '../components/LanguageToggle';
 import '../styles/design-tokens.css';
 import '../styles/dashboard-original.css';
@@ -24,9 +25,8 @@ export default function Dashboard() {
   const [trades, setTrades] = useState([]);
   const [stats, setStats] = useState(null);
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
-  const [isDailyTradesModalOpen, setIsDailyTradesModalOpen] = useState(false);
+  const [isDailyJournalModalOpen, setIsDailyJournalModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedDateTrades, setSelectedDateTrades] = useState([]);
   const [currentSection, setCurrentSection] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -67,13 +67,7 @@ export default function Dashboard() {
 
   const handleDayClick = (date) => {
     setSelectedDate(date);
-    setIsTradeModalOpen(true);
-  };
-
-  const handleDayTradesClick = (date, dayTrades) => {
-    setSelectedDate(date);
-    setSelectedDateTrades(dayTrades);
-    setIsDailyTradesModalOpen(true);
+    setIsDailyJournalModalOpen(true);
   };
 
   const toggleSidebar = () => {
@@ -157,7 +151,21 @@ export default function Dashboard() {
             <span>{t('nav.analytics')}</span>
           </button>
 
+          <Link
+            to="/journal"
+            className="sidebar-item w-full text-left p-3 rounded-lg flex items-center space-x-3 block"
+          >
+            <i className="fas fa-book"></i>
+            <span>{t('nav.journal')}</span>
+          </Link>
 
+          <Link
+            to="/chat"
+            className="sidebar-item w-full text-left p-3 rounded-lg flex items-center space-x-3 block"
+          >
+            <i className="fas fa-robot"></i>
+            <span>{t('nav.mentor')}</span>
+          </Link>
 
           <button
             onClick={() => showSection('settings')}
@@ -273,11 +281,10 @@ export default function Dashboard() {
                 <h3 className="text-xl font-bold mb-6 metric-number">
                   {t('dashboard.tradingCalendar')}
                 </h3>
-                <TradingCalendar
+                <CalendarWithJournal
                   currentUser={user}
                   currentDate={selectedDate}
                   onDayClick={handleDayClick}
-                  onDayTradesClick={handleDayTradesClick}
                 />
               </div>
 
@@ -374,14 +381,12 @@ export default function Dashboard() {
       <TradeModal
         isOpen={isTradeModalOpen}
         onClose={() => setIsTradeModalOpen(false)}
-        selectedDate={selectedDate}
       />
-
-      <DailyTradesModal
-        isOpen={isDailyTradesModalOpen}
-        onClose={() => setIsDailyTradesModalOpen(false)}
-        selectedDate={selectedDate}
-        trades={selectedDateTrades}
+      
+      <DailyJournalModal
+        isOpen={isDailyJournalModalOpen}
+        onClose={() => setIsDailyJournalModalOpen(false)}
+        currentDate={selectedDate}
       />
 
       {/* Overlay for mobile sidebar */}

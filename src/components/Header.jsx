@@ -1,28 +1,15 @@
 // Header.jsx
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { translatePage } from "../lang/translations";
-import { useAuth } from "../firebase/AuthContext"; // או מיקום אחר
+import { useAuth } from "../firebase/AuthContext";
+import { useLanguage } from "../i18n/useLanguage";
+import LanguageToggle from "./LanguageToggle";
+import "../styles/design-tokens.css";
 
 export default function Header() {
-  const [lang, setLang] = useState("en");
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, loading } = useAuth();
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem("lang") || "en";
-    setLang(savedLang);
-    document.documentElement.lang = savedLang;
-    translatePage(savedLang);
-  }, []);
-
-  const toggleLanguage = () => {
-    const newLang = lang === "en" ? "he" : "en";
-    setLang(newLang);
-    localStorage.setItem("lang", newLang);
-    document.documentElement.lang = newLang;
-    window.location.reload();
-  };
+  const { t } = useLanguage();
 
   const handleMenuToggle = () => setMenuOpen(!menuOpen);
   const handleMenuClose = () => setMenuOpen(false);
@@ -30,12 +17,9 @@ export default function Header() {
   return (
     <>
       {/* Language Toggle */}
-      <button
-        className="absolute top-4 left-4 text-sm bg-blue-700 px-2 py-1 rounded w-12 z-50"
-        onClick={toggleLanguage}
-      >
-        {lang === "he" ? "English" : "עברית"}
-      </button>
+      <div className="absolute top-4 left-4 z-50">
+        <LanguageToggle variant="header" />
+      </div>
 
       {/* Desktop Header */}
       <header className="header flex-center">
@@ -55,24 +39,20 @@ export default function Header() {
         </Link>
 
         <nav className="menu flex">
-          <Link to="/" className="menu-text flex" data-i18n="navHome">
-            Home
+          <Link to="/" className="menu-text flex">
+            {t('nav.home')}
           </Link>
-          <Link
-            to="/features"
-            className="menu-text flex"
-            data-i18n="navFeatures"
-          >
-            Features
+          <Link to="/features" className="menu-text flex">
+            {t('nav.features')}
           </Link>
-          <a href="#how" className="menu-text flex" data-i18n="navHowItWorks">
-            How It Works
+          <a href="#how" className="menu-text flex">
+            {t('nav.howItWorks')}
           </a>
-          <Link to="/prices" className="menu-text flex" data-i18n="navPricing">
-            Pricing
+          <Link to="/prices" className="menu-text flex">
+            {t('nav.pricing')}
           </Link>
-          <Link to="/chat" className="menu-text flex" data-i18n="navContact">
-            Contact Us
+          <Link to="/chat" className="menu-text flex">
+            {t('nav.contact')}
           </Link>
         </nav>
 
@@ -81,8 +61,8 @@ export default function Header() {
             <div className="btns flex" id="signup-button">
               <Link to="/prices" className="btn-small flex-center">
                 <div className="btn-small-frame flex-center">
-                  <span className="btn-small-text" data-i18n="navSignUp">
-                    Sign Up
+                  <span className="btn-small-text">
+                    {t('nav.signUp')}
                   </span>
                 </div>
               </Link>
@@ -90,8 +70,8 @@ export default function Header() {
             <div className="log-in flex-center" id="login-button">
               <Link to="/login" className="btn-small flex-center">
                 <span className="log-in-dot"></span>
-                <span className="log-in-text" data-i18n="navLogin">
-                  Log In
+                <span className="log-in-text">
+                  {t('nav.login')}
                 </span>
               </Link>
             </div>
@@ -150,32 +130,28 @@ export default function Header() {
           </div>
 
           <nav className="mobile-menu-items flex-center">
-            <a href="#home" className="mobile-link" data-i18n="navHome">
-              Home
+            <a href="#home" className="mobile-link">
+              {t('nav.home')}
             </a>
-            <a href="#features" className="mobile-link" data-i18n="navFeatures">
-              Features
+            <a href="#features" className="mobile-link">
+              {t('nav.features')}
             </a>
-            <a href="#how" className="mobile-link" data-i18n="navHowItWorks">
-              How It Works
+            <a href="#how" className="mobile-link">
+              {t('nav.howItWorks')}
             </a>
-            <a href="#pricing" className="mobile-link" data-i18n="navPricing">
-              Pricing
+            <a href="#pricing" className="mobile-link">
+              {t('nav.pricing')}
             </a>
-            <a href="#contact" className="mobile-link" data-i18n="navContact">
-              Contact Us
+            <a href="#contact" className="mobile-link">
+              {t('nav.contact')}
             </a>
             {!user && (
               <>
-                <Link to="/login" className="mobile-link" data-i18n="navLogin">
-                  Log In
+                <Link to="/login" className="mobile-link">
+                  {t('nav.login')}
                 </Link>
-                <Link
-                  to="/prices"
-                  className="mobile-link special"
-                  data-i18n="navSignUp"
-                >
-                  Sign Up
+                <Link to="/prices" className="mobile-link special">
+                  {t('nav.signUp')}
                 </Link>
               </>
             )}

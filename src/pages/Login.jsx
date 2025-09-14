@@ -1,12 +1,12 @@
 // src/pages/Login.jsx
 import { useState } from "react";
-import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "firebase/auth";
-import { auth } from "../firebase/firebase";
+import { useAuth } from "../firebase/AuthContext";
 import useLang from "../lang/useLang";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const { t } = useLang();
+  const { signIn, loading: authLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,11 +18,11 @@ export default function Login() {
 
     setLoading(true);
     try {
-      await setPersistence(auth, browserLocalPersistence);
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/");
+      await signIn(email, password);
+      navigate("/dashboard");
     } catch (error) {
-      alert(t("loginError") + ": " + error.message);
+      // Error handling is done in AuthContext
+      console.error("Login failed:", error);
     }
     setLoading(false);
   };
@@ -48,10 +48,10 @@ export default function Login() {
         />
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || authLoading}
           className="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded"
         >
-          {loading ? "..." : t("loginBtn")}
+          {(loading || authLoading) ? "..." : t("loginBtn")}
         </button>
       </form>
     </div>

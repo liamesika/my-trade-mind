@@ -1,6 +1,5 @@
-// /public/scripts/firebase-auth.js
-
-import { auth , db } from "./firebase";
+// Unified Firebase Auth Functions
+import { auth, firestore as db } from "../scripts/firebase-init.js";
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -14,13 +13,9 @@ import {
 } from "firebase/auth";
 
 import {
-  // collection,
-  // getDocs,
-  // deleteDoc,
   doc,
-//   getDoc,
   setDoc,
-  // addDoc
+  serverTimestamp
 } from 'firebase/firestore';
 
 /**
@@ -114,18 +109,17 @@ export async function idToken(forceRefresh = false) {
 
 export async function saveUserProfile(userId, profileData) {
   try {
-    // שמירה בתת-collection בשם onboarding, במסמך בשם userProfile
-    const profileRef = doc(db, "users", userId, "onboarding", "userProfile");
+    const profileRef = doc(db, "users", userId, "profile", "userProfile");
 
     await setDoc(profileRef, {
       ...profileData,
-      profileCompletedAt: new Date().toISOString()
+      profileCompletedAt: serverTimestamp()
     });
 
-    console.log("✅ פרופיל היכרות נשמר בתת-קולקשן onboarding בהצלחה");
+    console.log("✅ User profile saved successfully");
   } catch (error) {
-    console.error("❌ שגיאה בשמירת פרופיל היכרות:", error);
-    alert("שגיאה בשמירת הפרופיל. נסה שוב.");
+    console.error("❌ Error saving user profile:", error);
+    throw new Error("Failed to save user profile");
   }
 }
 
@@ -137,19 +131,21 @@ export async function saveUserProfile(userId, profileData) {
  * @param {string} mentorImg - The image URL of the selected mentor.
 */
 
-export async function saveMentorToUser(userName,userId, mentorName, mentorImg, mentorType) {
+export async function saveMentorToUser(userId, mentorName, mentorImg, mentorType) {
   try {
-    await setDoc(doc(db, "users", userName), {
-      userId,
+    const mentorRef = doc(db, "users", userId, "mentor", "settings");
+    
+    await setDoc(mentorRef, {
       mentorName,
       mentorImg,
       mentorType,
-      mentorChosenAt: new Date().toISOString()
-    }, { merge: true });
-    console.log("✅ מנטור נשמר ב־Firebase");
+      mentorChosenAt: serverTimestamp()
+    });
+    
+    console.log("✅ Mentor saved successfully");
   } catch (error) {
-    console.error("שגיאה בשמירת מנטור:", error);
-    alert("⚠️ שגיאה בשמירת המנטור. נסה שוב.");
+    console.error("❌ Error saving mentor:", error);
+    throw new Error("Failed to save mentor");
   }
 }
 
